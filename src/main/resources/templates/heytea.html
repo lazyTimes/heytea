@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title> H E Y T E A喜茶</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
+    <!--axios-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <script>
+    </script>
+</head>
+<!--  -->
+
+<body background="bg1.jpg" style="background-size: 100%;" class="font-weight-bold">
+
+    <div id="app">
+        <!-- 展板、轮播 -->
+        <div class="jumbotron jumbotron-fluid" style="background-color: rgba(255, 255, 255, 0); height: 80px;
+     margin-top: -40px;  ">
+            <div class="container">
+                <h1 class="display-5 "  style="color:white;font-size: 1.8em ">H E Y T E A &nbsp;&nbsp;<a style="color:white;text-decoration:none" href="#app7" data-toggle="collapse" >喜茶</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="#app1" class="display-5" data-toggle="collapse" style="color:white;font-size: 0.8em; text-decoration:none">在线点单</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="#app2" class="display-5" data-toggle="collapse" style="color:white;font-size: 0.8em; text-decoration:none">
+                        增加商品</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="#app3" class="display-5" data-toggle="collapse" style="color:white;font-size: 0.8em; text-decoration:none">查看商品</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="#app4" class="display-5" data-toggle="collapse" style="color:white;font-size: 0.8em; text-decoration:none">办理会员</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a @click="getitem()" href="#app5" class="display-5" data-toggle="collapse" style="color:white;font-size: 0.8em; text-decoration:none">查看订单</a>
+                </h1>
+            </div>
+        </div>
+        <!--app1-->
+        <div id="app1" class="collapse">
+            <!-- 容器:响应式 -->
+            <div class="container-fluid">
+                <!-- 行 -->
+                <div class="row">
+                    <!-- 列:点单 -->
+                    <div class="col-lg-4 col-sm-12" style="margin-top: -30px">
+
+                        <div class="card" style="color:white;font-size: 1.5em ;background-color: rgba(255, 255, 255, 0.35)">
+                            <!-- <img class="card-img-top" src="holder.js/100x180/" alt=""> -->
+                            <div class="card-body">
+                                <!-- <h4 class="card-title">饮品</h4> -->
+                                <!-- 饮品 -->
+
+                                <div class="form-group">
+                                    <label for="">饮品</label>
+                                    <select class="form-control" v-model="drink" style="background-color: rgba(255, 255, 255, 0.5)">
+                                        <option v-for="item in drinkList" v-bind:value="item">{{item.name}}</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="card" style="background-color: rgba(255, 255, 255, 0.35)">
+                            <div class="card-body">
+                                <!-- 容量 -->
+                                <div id="size" class="form-group">
+                                    <label for="">规格</label>
+                                    <br>
+                                    <input type="button" v-on:click="activeSize($event)" v-bind:class="[item==size?'active':'']"
+                                        v-for="item in sizeList" class="btn  mr-2 btn-outline-danger" v-bind:value="item">
+                                </div>
+
+                                <!-- 糖 -->
+                                <div id="suger" class="form-group">
+                                    <label for="">甜度</label>
+                                    <br>
+                                    <input type="button" v-on:click="activeSuger($event)" v-bind:class="[item==suger?'active':'']"
+                                        v-for="item in sugerList" class="btn  mr-2 btn-outline-danger" v-bind:value="item">
+                                </div>
+                                <!-- 加冰[常温、加冰] -->
+                                <div id="ice" class="form-group">
+                                    <label for="">加冰</label>
+                                    <br>
+                                    <input type="button" v-on:click="activeIce($event)" v-bind:class="[item==ice?'active':'']"
+                                        v-for="item in iceList" class="btn  btn-outline-danger mr-2" v-bind:value="item">
+                                </div>
+                                <!-- 配料[红豆、珍珠、椰果、牛奶] -->
+                                <div id="dosing" class="form-group">
+                                    <label for="">配料</label>
+                                    <br>
+                                    <button v-on:click="activeDosing($event)" v-bind:class="[dosing.indexOf(item)!=-1? 'active':'']"
+                                        v-for="(item, index) in dosingList" :key="index" class="btn  btn-outline-danger mr-2 mt-2">{{item}}</button>
+                                </div>
+                                <div id="customid" class="form-group">
+                                    <label for="">会员卡号</label>
+                                    <br>
+                                    <div class="form-group">
+                                        <input v-model="idcardcard" type="text" class="form-control" aria-describedby="helpId"
+                                            placeholder="请输入会员卡号(可以为空)">
+                                    </div>
+                                </div>
+                                <!-- 提交 -->
+                                <button type="button" v-on:click="submit()" id="checkIn" class="btn btn-success  btn-block">提交</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- 订单 -->
+                    <div class="col-lg-7 col-sm-12 " style="color:white;background-color: rgba(255, 255, 255, 0.2) ;
+                margin-top: -30px">
+
+                        <div id="msg" style="font-size: 1.5em">
+                            {{drink.name}}-{{size}}-{{suger}}-{{ice}}-{{dosing}}
+                        </div>
+
+                        <table class="table" style="color:white">
+                            <thead>
+                                <tr>
+                                    <th>饮品</th>
+                                    <th>规格</th>
+                                    <th>甜度</th>
+                                    <th>加冰</th>
+                                    <th>配料</th>
+                                    <th>价格</th>
+                                    <th>出货</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, index) in infos" :key="index">
+
+                                    <td v-if="index<4" v-for="(i, index) in item" :key="index">{{i}}</td>
+
+                                    <td v-if="index==4" v-for="(i, index) in item" :key="index">
+                                        <span v-for="(j, index) in i" :key="index" class="badge badge-pill badge-success mr-1">{{j}}</span>
+                                    </td>
+
+                                    <td v-if="index==5" v-for="(i, index) in item" :key="index">
+
+                                        <span class="badge badge-pill badge-danger mr-1">{{i}}</span>
+
+                                    </td>
+
+                                    <td>
+                                        <button @click="additem(item)" type="button" class="btn btn-sm btn-primary ">出货</button>
+
+                                        <button v-on:click="dlt(item)" type="button" class="btn btn-sm btn-danger ml-3">删除</button>
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--app2  -->
+        <div id="app2" class="container  collapse">
+            <div class="card " style=" width:550px; height:330px; margin: auto ;background-color: rgba(255, 255, 255, 0.35)">
+                <div class="card-body">
+                    <h5 class="card-title">商品名称:</h5>
+                    <div class="form-group">
+                        <input v-model="name" class="form-control" aria-describedby="helpId" placeholder="请输入商品名称">
+                    </div>
+                    <hr>
+                    <h5 class="card-title">商品价格:</h5>
+                    <div class="form-group">
+                        <input v-model="dprice" class="form-control" aria-describedby="helpId" placeholder="请输入商品中杯价格">
+                    </div>
+                    <hr>
+                    <button @click="addproduct()" type="button" class="btn btn-success btn-block mt-4">添加商品</button>
+                </div>
+            </div>
+        </div>
+        <!--app3-->
+        <div id="app3" class="container collapse">
+            <table class="table table-hover " style="margin: auto; color:white;background-color: rgba(255, 255, 255, 0.35);height: 500px;width: 700px;;">
+                <thead>
+                    <tr>
+                        <th>饮品名称</th>
+                        <th>中杯价格</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in drinkList">
+                        <td>{{item.name}}</td>
+                        <td>{{item.price}}</td>
+                        <td>
+                            <button @click="update(item.name,item.price)" type="button" class="btn btn-primary btn-sm"
+                                data-toggle="modal" data-target="#modelId">修改</button>
+                            <button @click="delproduct(item.name)" type="button" class="btn btn-danger btn-sm ">删除</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Modal -->
+            <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="modelTitleId">修改饮品</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">商品名称:</h5>
+                            <div class="form-group">
+                                <input v-model="ddrink" class="form-control" aria-describedby="helpId" placeholder="">
+                            </div>
+                            <hr>
+                            <h5 class="card-title">商品价格:</h5>
+                            <div class="form-group">
+                                <input v-model="dprice" class="form-control" name="" id="" aria-describedby="helpId">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                            <button @click="upda()" type="button" class="btn btn-primary" data-dismiss="modal">确定修改</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--app4  -->
+        <div id="app4" class="container  collapse">
+            <div class="card " style=" width:550px; height:380px; margin: auto ;background-color: rgba(255, 255, 255, 0.35)">
+                <div class="card-body">
+                    <h5 class="card-title">会员卡号:</h5>
+                    <div class="form-group">
+                        <input v-model="idcard" class="form-control" aria-describedby="helpId" placeholder="请输入会员卡号（手机号）">
+                    </div>
+                    <hr>
+                    <h5 class="card-title">会员姓名：</h5>
+                    <div class="form-group">
+                        <input v-model="cname" class="form-control" name="" id="" aria-describedby="helpId" placeholder="请输入会员姓名">
+                    </div>
+                    <hr>
+                    <button @click="addcustom()" type="button" class="btn btn-success btn-block mt-4">添加会员</button>
+
+                    <button href="#app6" @click="getcustom" data-toggle="collapse" type="button" class="btn btn-success btn-block mt-4">查看所有会员</button>
+                </div>
+            </div>
+            <!--app6-->
+            <div id="app6" class="container collapse">
+                <table class="table table-hover" style="color:white;background-color: rgba(255, 255, 255, 0.35)">
+                    <thead>
+                        <tr>
+                            <th>会员卡号</th>
+                            <th>会员姓名</th>
+                            <th>会员积分</th>
+                            <th>办理时间</th>
+                            <th>有效期 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in customList">
+                            <td>{{item.idcard}}</td>
+                            <td>{{item.name}}</td>
+                            <td>{{item.integral}}</td>
+                            <td>{{item.time}}</td>
+                            <td>一年</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            
+        </div>
+        <!--app5  -->
+        <div id="app5" class="container collapse">
+            <table class="table table-hover" style="color:white;background-color: rgba(255, 255, 255, 0.35)">
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <select v-model="fname" class="form-control" style="background-color: rgba(255, 255, 255, 0.75)">
+                            <option v-bind:value="item.name" v-for="item in drinkList">{{item.name}}</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <button @click="findnm()" class="btn btn-outline-success my-2 my-sm-0 btn-block" type="submit">搜索</button>
+                    </div>
+                </div>
+                <div class="mt-1">
+                    <thead>
+                        <tr>
+                            <th>饮品名称</th>
+                            <th>规格</th>
+                            <th>甜度</th>
+                            <th>热度</th>
+                            <th>配料</th>
+                            <th>价格</th>
+                            <th>时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in itemList">
+                            <td>{{item.drink}}</td>
+                            <td>{{item.size}}</td>
+                            <td>{{item.suger}}</td>
+                            <td>{{item.ice}}</td>
+                            <td>{{item.dosing}}</td>
+                            <td>{{item.price}}</td>
+                            <td>{{item.time}}</td>
+                        </tr>
+
+                    </tbody>
+            </table>
+            <ul v-if="(this.itemList.length)>=10" class="pagination" style="margin-top: -10px; "> 
+                 <li @click="change(t)" v-for="(t, index) in Math.floor(t)" :key="index"  class="page-item " ><a class="page-link text-center" 
+                     style="width: 60px;height:35px;background-color: rgba(250, 250, 250, 0.35)" href="#">{{t}}</a></li>
+              </ul>
+            
+        </div>
+        <div id="app7" class="container  collapse">
+            <div class="card " style=" width:550px; height:330px; margin: auto ;background-color: rgba(255, 255, 255, 0.35)">
+                <div class="card-body">
+                    <h5 class="card-title">员工账号:</h5>
+                    <div class="form-group">
+                        <input v-model="employee" class="form-control" aria-describedby="helpId" placeholder="请输入账号">
+                    </div>
+                    <hr>
+                    <h5 class="card-title">登录密码:</h5>
+                    <div class="form-group">
+                        <input v-model="mima" class="form-control" aria-describedby="helpId" placeholder="请输入密码">
+                    </div>
+                    <hr>
+                    <button @click="login" type="button" class="btn btn-success btn-block mt-4">登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                drinkList: [],
+                sizeList: ['小杯', '中杯', '大杯', '迷你杯'],
+                sugerList: ['多糖', '半糖', '少糖', '无糖'],
+                iceList: ['加热', '常温', '加冰', '去冰'],
+                dosingList: ['红豆', '珍珠', '椰果', '芋圆', '烧仙草'],
+                drink: {
+                    "name": '开心红茶',
+                    "price": 8
+                },
+                size: '小杯',
+                suger: '多糖',
+                ice: '加热',
+                dosing: [],
+                info: [],
+                infos: [],
+                price: 0,
+                ddd: "",
+                dprice: "",
+                name: "",
+                idcard: '',
+                cname: '',
+                itemList: [],
+                customList: [],
+                ddrink: "",
+                dprice: "",
+                dddrink: "",
+                ddprice: "",
+                ite: '',
+                fname: '开心红茶',
+                finame: [],
+                idcardcard: '',
+                m: 0,
+                itemList1: [],
+                i:0,
+                t:0,
+                employee:'',
+                mima:'',
+
+            },
+            methods: {
+                login:function(){
+
+                },
+                change:function(i){
+                    i=(i-1)*10;
+                    this.start=i+1;
+                    this.itemList=this.itemList1.slice(i,i+10);
+                },
+                
+                activeSize: function (event) {
+                    this.size = event.target.value
+                },
+                activeSuger: function (event) {
+                    this.suger = event.target.value
+                },
+                activeIce: function (event) {
+                    this.ice = event.target.value
+                },
+                activeDosing: function (event) {
+                    if (this.dosing.indexOf(event.target.innerText) != -1) {
+                        this.dosing.splice(this.dosing.indexOf(event.target.innerText), 1)
+                    } else {
+                        this.dosing.push(event.target.innerText)
+                    }
+                },
+                submit: function () {
+
+
+                    
+                    // this.size = '小杯';
+                    // this.suger = '多糖';
+                    // this.ice = '加热';
+                    // this.dosing = [];
+                    axios.post("/api/v1/Custom/findcus", {
+                            idcard: this.idcardcard,
+                        })
+                        .then((response) => {
+                            console.log(this.m);
+                            this.m = response.data;
+                            console.log(this.m);
+                            if (this.m == 1) {
+                                window.alert("卡号不存在");
+                            } else {
+                                let p = this.drink.price;
+
+                                if (this.size === '迷你杯') {
+                                    this.price = p - 3;
+                                }
+                                if (this.size === '小杯') {
+                                    this.price = p - 2;
+                                }
+                                if (this.size === '中杯') {
+                                    this.price = p;
+                                }
+                                if (this.size === '大杯') {
+                                    this.price = p + 2;
+                                }
+                                this.info.push(this.drink.name)
+                                this.info.push(this.size)
+                                this.info.push(this.suger)
+                                this.info.push(this.ice)
+                                let d = this.dosing.slice()
+                                if (d != "") {
+                                    console.log(d.length);
+                                    this.price = this.price + (d.length * 2);
+                                }
+                                console.log(d);
+
+                                this.info.push(d)
+                                this.info.push(this.price);
+                                this.info.push(this.idcardcard);
+                                this.infos.push(this.info);
+                                console.log(this.infos);
+                                let dd = "";
+                                d.forEach(element => {
+                                    dd = dd + "、" + element;
+                                });
+                                this.ddd = dd.slice(1, dd.length);
+
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        })
+                        this.info = [];
+
+                },
+                dlt: function (item) {
+                    this.infos.splice(this.infos.indexOf(item), 1)
+                },
+                addproduct: function () {
+                    if (this.name === "" || this.price ==="") {
+                        window.alert("产品名称或者价格不能为空");
+                    } else {
+                        axios.post("/api/v1/Product", {
+                                name: this.name,
+                                price: this.dprice,
+                            })
+                            .then((response) => {
+                                console.log(response.data);
+                                window.alert("添加成功");
+                                window.location.reload();
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                            })
+                    }
+                },
+                addcustom: function () {
+                    if (this.idcard === "" || this.cname === "") {
+                        window.alert("卡号或姓名不能为空");
+                    } else {
+                        axios.post("/api/v1/Custom", {
+                                idcard: this.idcard,
+                                name: this.cname,
+                            })
+                            .then((response) => {
+                                console.log(response.data);
+                                window.alert("添加成功");
+                                window.location.reload();
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                            })
+                    }
+                },
+                additem: function (event) {
+                    axios.post("/api/v1/Item", {
+                            drink: event[0],
+                            size: event[1],
+                            suger: event[2],
+                            ice: event[3],
+                            dosing: this.ddd,
+                            price: event[5],
+                        })
+                        .then((response) => {
+                            console.log(response.data);
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        })
+                    axios.post("/api/v1/Custom/jifen", {
+                            idcard: this.idcardcard,
+                            price: this.price,
+                        })
+                        .then((response) => {
+                            console.log(response.data);
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        })
+
+
+                    this.infos.splice(this.infos.indexOf(event), 1)
+                },
+                getitem: function () {
+                    axios.get("/api/v1/Item")
+                        .then((response) => {
+                            this.itemList1 = response.data;
+                            console.log(this.itemList1.length);
+                            this.t=this.itemList1.length%10==0?(this.itemList1.length)/10:(this.itemList1.length/10)+1;
+                           console.log(this.t);
+                           
+                            this.itemList=this.itemList1.slice(0,10+this.i);
+
+                            console.log(this.itemList);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                },
+                getcustom: function () {
+                    axios.get("/api/v1/Custom")
+                        .then((response) => {
+                            this.customList = response.data;
+                            console.log(this.customList);
+
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                },
+                delproduct: function (event) {
+                    axios.post("/api/v1/Product/delproduct", {
+                            name: event,
+                        })
+                        .then((response) => {
+                            console.log(response.data);
+                            window.alert("删除成功");
+                            window.location.reload();
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        })
+                },
+                update: function (event, event2) {
+                    this.ddrink = event;
+                    this.dprice = event2;
+                    this.dddrink = this.ddrink;
+                    this.ddprice = this.dprice;
+                },
+                upda: function () {
+                    if (this.dddrink === this.ddrink && this.ddprice === this.dprice) {
+                        window.alert("修改失败");
+                    } else {
+                        axios.post("/api/v1/Product/updata", {
+                                rdrink: this.dddrink,
+                                drink: this.ddrink,
+                                price: this.dprice,
+                            })
+                            .then((response) => {
+                                console.log(response.data);
+                                window.alert("修改成功");
+                                window.location.reload();
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                            })
+                    }
+                },
+                findnm: function () {
+                    // axios.get("/api/v1/Item/findname", {
+
+                    //     param:{
+                    //         name:this.fname
+                    //     }
+
+                    // })
+                    // .then((response)=> {
+                    //     console.log(response.data);
+
+                    //     this.finame=response.data;
+                    // })
+                    // .catch((error)=> {
+                    // })
+                    axios.post("/api/v1/Item/findname", {
+                            name: this.fname
+                        })
+                        .then((response) => {
+                            console.log(response.data);
+                            this.itemList = response.data;
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        })
+
+                    // axios.get("/api/v1/Item/fname")
+                    //     .then((response) => {
+                    //         console.log(response.data);
+                            
+                    //         console.log(this.itemList);
+
+                    //     })
+                    //     .catch((error) => {
+                    //         console.log(error);
+                    //     })  
+                },
+            },
+            mounted() {
+                axios.get("/api/v1/Product")
+                    .then((response) => {
+                        console.log(response.data);
+                        this.drinkList = response.data;
+                        console.log(this.drinkList);
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            }
+        });
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
